@@ -8,6 +8,7 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [updateState, setUpdateState] = useState('')
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -19,6 +20,17 @@ function App() {
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
 
+  const handleChangeTodo = (e: string) => {
+    setUpdateState(e)
+  }
+
+  function updateTodo(id: string) {
+    const update = {
+      id: id,
+      content: updateState
+    }
+    client.models.Todo.update(update)
+  }
     
   function deleteTodo(id: string) {
     client.models.Todo.delete({ id })
@@ -34,8 +46,9 @@ function App() {
           <ul>
             {todos.map((todo) => (
               <li key={todo.id}>
-                {todo.content}
+                <input onChange={(e) => handleChangeTodo(e.target.value)} defaultValue={todo.content || ""}/>
                 <button onClick={() => deleteTodo(todo.id)}>Remove</button>
+                <button onClick={() => updateTodo(todo.id)}>Update</button>
               </li>
             ))}
           </ul>
