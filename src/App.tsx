@@ -1,56 +1,44 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
+import { uploadData } from "aws-amplify/storage";
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-
-const client = generateClient<Schema>();
+import { useState } from 'react';
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-  const [updateState, setUpdateState] = useState('')
+  const [file, setFile] = useState();
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
 
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
+  const handleFileChange = (e: any) => {
+    setFile(e.target.files[0]);
+  };
 
-  const handleChangeTodo = (e: string) => {
-    setUpdateState(e)
-  }
+  const handleUpload = async() => {
+    let response = null
+    try {
+      if (file !== undefined) {
+        response = await uploadData({
+          path: `D/${file}`,
+          data: file,
+        })
+      }
+      console.log(response);
 
-  function updateTodo(id: string) {
-    const update = {
-      id: id,
-      content: updateState
+    } catch (error) {
+      console.error();
+      
     }
-    client.models.Todo.update(update)
-  }
-    
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
   }
 
-  return (
-        
+  return ( 
     <Authenticator>
       {({ signOut }) => (
         <main>
-          <h1>My todos</h1>
-          <button onClick={createTodo}>+ new</button>
+          <h1>Choose file</h1>
+          <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+      <p>{message}</p>
           <ul>
-            {todos.map((todo) => (
-              <li key={todo.id}>
-                <input onChange={(e) => handleChangeTodo(e.target.value)} defaultValue={todo.content || ""}/>
-                <button onClick={() => deleteTodo(todo.id)}>Remove</button>
-                <button onClick={() => updateTodo(todo.id)}>Update</button>
-              </li>
-            ))}
+
           </ul>
           <div>
             🥳 App successfully hosted. Try creating a new todo.
