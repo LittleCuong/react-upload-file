@@ -9,8 +9,8 @@ const backend = defineBackend({data})
 backend.addOutput({
   auth: {
     aws_region: "ap-southeast-1",
-    user_pool_id: "ap-southeast-1_PrB1LBC61",
-    user_pool_client_id: "1in55sf06h9beto16jk37offki",
+    user_pool_id: "ap-southeast-1_Bx9KKRh7y",
+    user_pool_client_id: "2d07mgousu6hbtumkv0uktb9n0",
     identity_pool_id: "ap-southeast-1:23751e12-17a0-49c9-b9c6-90bf54ac5919",
     username_attributes: ["email"],
     standard_required_attributes: ["email"],
