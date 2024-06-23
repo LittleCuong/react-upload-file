@@ -4,12 +4,14 @@ import '@aws-amplify/ui-react/styles.css';
 import { useState } from 'react';
 
 function App() {
-  const [file, setFile] = useState();
+  const [file, setFile] = useState<File>();
   const [message, setMessage] = useState("");
 
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
+    console.log(e.target.files);
+    
   };
 
   const handleUpload = () => {
@@ -17,7 +19,7 @@ function App() {
     try {
       if (file !== undefined) {
         response = uploadData({
-          path: `picture-submissions/${file}`,
+          path: `picture-submissions/${file.name}`,
           data: file,
         })
       }
