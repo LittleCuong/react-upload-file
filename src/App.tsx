@@ -12,20 +12,20 @@ function App() {
     setFile(e.target.files[0]);
   };
 
-  const handleUpload = async() => {
+  const handleUpload = () => {
     let response = null
     try {
       if (file !== undefined) {
-        response = await uploadData({
-          path: `D/${file}`,
+        response = uploadData({
+          path: `picture-submissions/${file}`,
           data: file,
         })
       }
       console.log(response);
-
+      setMessage("Upload successfully!!!")
     } catch (error) {
       console.error();
-      
+      setMessage("Upload failed!!!")
     }
   }
 
@@ -35,11 +35,8 @@ function App() {
         <main>
           <h1>Choose file</h1>
           <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
-      <p>{message}</p>
-          <ul>
-
-          </ul>
+          <button onClick={handleUpload}>Upload</button>
+          <p>{message}</p>
           <div>
             🥳 App successfully hosted. Try creating a new todo.
             <br />
