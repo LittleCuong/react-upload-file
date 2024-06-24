@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { uploadData } from "aws-amplify/storage";
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { useState } from 'react';
+import axios from 'axios';
 
 function App() {
   const [file, setFile] = useState<File>();
@@ -23,11 +24,22 @@ function App() {
           data: file,
         })
       }
+      handleGetTrigger()
       console.log(response);
       setMessage("Upload successfully!!!")
     } catch (error) {
       console.error();
       setMessage("Upload failed!!!")
+    }
+  }
+
+  const handleGetTrigger = async() => {
+    let response = null
+    try {
+      response = await axios.get("https://k7pw3ppez0.execute-api.ap-southeast-1.amazonaws.com/firstState/uploadTriggerDemo")
+      console.log(response);    
+    } catch (error) {
+      console.error();
     }
   }
 
