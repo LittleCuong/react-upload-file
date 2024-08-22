@@ -4,76 +4,157 @@ export const handler: CustomMessageTriggerHandler = async (event) => {
   if (event.triggerSource === "CustomMessage_ForgotPassword") {
     //   event.response.emailMessage = `Your new one-time code is ${event.request.codeParameter}`;
     event.response.emailMessage = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Reset Password</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                }
+                .container {
+                    background-color: #ffffff;
+                    padding: 30px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                    max-width: 400px;
+                    width: 100%;
+                }
+                h1 {
+                    color: #333333;
+                    font-size: 24px;
+                    margin-bottom: 20px;
+                }
+                .code-box {
+                    background-color: #f0f0f0;
+                    border: 1px solid #ddd;
+                    padding: 15px;
+                    font-size: 18px;
+                    letter-spacing: 2px;
+                    font-weight: bold;
+                    color: #333333;
+                    margin-bottom: 20px;
+                    border-radius: 5px;
+                }
+                p {
+                    font-size: 16px;
+                    color: #666666;
+                }
+                .btn {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    color: #ffffff;
+                    background-color: #007bff;
+                    border-radius: 5px;
+                    text-decoration: none;
+                    font-size: 16px;
+                }
+                .btn:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Reset Your Password</h1>
+                <p>Use the code below to reset your password:</p>
+                <div class="code-box">${event.request.codeParameter}</div>
+                <p>If you did not request this, please ignore this email.</p>
+            </div>
+        </body>
+        </html>
+        `;
+    event.response.emailSubject = "Reset my password";
+  } else if (event.triggerSource === "CustomMessage_SignUp") {
+    event.response.emailMessage = `
+    <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reset Password</title>
+        <title>Verify Your Account</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
+                background-color: #f7f7f7;
                 margin: 0;
-                padding: 0;
+                padding: 20px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 height: 100vh;
             }
             .container {
-                background-color: white;
-                padding: 20px;
+                background-color: #ffffff;
+                padding: 30px;
                 border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                width: 100%;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
                 max-width: 400px;
+                width: 100%;
+            }
+            h1 {
+                color: #444444;
+                font-size: 28px;
+                margin-bottom: 10px;
             }
             h2 {
-                text-align: center;
+                color: #007bff;
+                font-size: 22px;
                 margin-bottom: 20px;
             }
-            input[type="password"], input[type="submit"] {
-                width: 100%;
-                padding: 10px;
-                margin: 10px 0;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-sizing: border-box;
+            .code-box {
+                background-color: #f0f0f0;
+                border: 1px solid #ddd;
+                padding: 15px;
+                font-size: 18px;
+                letter-spacing: 2px;
+                font-weight: bold;
+                color: #333333;
+                margin-bottom: 20px;
+                border-radius: 5px;
             }
-            input[type="submit"] {
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                cursor: pointer;
+            p {
+                font-size: 16px;
+                color: #666666;
             }
-            input[type="submit"]:hover {
-                background-color: #45a049;
-            }
-            .message {
-                text-align: center;
-                margin-top: 20px;
-                font-size: 14px;
-            }
-            .message a {
-                color: #4CAF50;
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                color: #ffffff;
+                background-color: #28a745;
+                border-radius: 5px;
                 text-decoration: none;
+                font-size: 16px;
             }
-            .message a:hover {
-                text-decoration: underline;
+            .btn:hover {
+                background-color: #218838;
             }
         </style>
     </head>
     <body>
-
         <div class="container">
-            <h2>Reset Your Password</h2>
-            <span>Your new one-time code is ${event.request.codeParameter}</span>
+            <h1>VoltaRocks</h1>
+            <h2>Verify Your Account</h2>
+            <p>Your verification code is:</p>
+            <div class="code-box">${event.request.codeParameter}</div>
+            <p>Please enter this code on the verification page to activate your account.</p>
+            <p>If you did not sign up for a VoltaRocks account, please disregard this email.</p>
+            <a href="#" class="btn">Verify Account</a>
         </div>
-
     </body>
     </html>
     `;
-    event.response.emailSubject = "Reset my password";
+    event.response.emailSubject = "Verification code";
   }
 
   return event;
