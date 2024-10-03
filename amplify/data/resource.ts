@@ -30,18 +30,7 @@ const schema = a.schema({
     .for(a.ref("addProduct")) // Subscribes to the 'publish' mutation
     .handler(
       a.handler.custom({
-        entry: "./onProductAdd.js", // Handler for receiving messages
-      })
-    )
-    .authorization((allow) => [allow.publicApiKey()]),
-
-  // Subscription to receive messages published to a channel
-  receive: a
-    .subscription()
-    .for(a.ref("publish")) // Subscribes to the 'publish' mutation
-    .handler(
-      a.handler.custom({
-        entry: "./receive.js", // Handler for receiving messages
+        entry: "./onProductAdd.js", // Handler for receiving new product
       })
     )
     .authorization((allow) => [allow.publicApiKey()]),
