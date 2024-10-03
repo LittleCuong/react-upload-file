@@ -7,9 +7,41 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  // Message type that's used for this PubSub sample
+  Product: a.customType({
+    product: a.string().array().required(),
+    channelName: a.string().required(),
+  }),
+
+  // Message publish mutation
+  publish: a
+    .mutation()
+    .arguments({
+      channelName: a.string().required(),
+      content: a.string().array().required(),
+    })
+    .returns(a.ref("Product"))
+    .handler(
+      a.handler.custom({ dataSource: "HttpDataSource", entry: "./publish.js" })
+    )
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  // Subscribe to incoming messages
+  receive: a
+    .subscription()
+    // subscribes to the 'publish' mutation
+    .for(a.ref("publish"))
+    // subscription handler to set custom filters
+    .handler(
+      a.handler.custom({ dataSource: "HttpDataSource", entry: "./receive.js" })
+    )
+    // authorization rules as to who can subscribe to the data
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  // A data model to manage channels
+  Channel: a
     .model({
-      content: a.string(),
+      name: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });

@@ -14,6 +14,7 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.635.0",
     "aws-amplify": "^6.3.7",
     "aws-sdk": "^2.1679.0",
+    "axios": "^1.7.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

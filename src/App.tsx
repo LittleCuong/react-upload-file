@@ -1,44 +1,28 @@
-import { uploadData } from "aws-amplify/storage";
-import { Authenticator } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
-import { useState } from 'react';
+import { Authenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+import { useEffect, useState } from "react";
+
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "../amplify/data/resource";
+
+const client = generateClient<Schema>();
 
 function App() {
-  const [file, setFile] = useState<File>();
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const sub = client.subscriptions.receive().subscribe({
+      next: (event) => {
+        console.log(event);
+      },
+    });
+    return () => sub.unsubscribe();
+  });
 
-  const handleFileChange = (e: any) => {
-    setFile(e.target.files[0]);
-    console.log(e.target.files);
-    
-  };
-
-  const handleUpload = () => {
-    let response = null
-    try {
-      if (file !== undefined) {
-        response = uploadData({
-          path: `picture-submissions/${file.name}`,
-          data: file,
-        })
-      }
-      console.log(response);
-      setMessage("Upload successfully!!!")
-    } catch (error) {
-      console.error();
-      setMessage("Upload failed!!!")
-    }
-  }
-
-  return ( 
+  return (
     <Authenticator>
       {({ signOut }) => (
         <main>
-          <h1>Choose file</h1>
-          <input type="file" onChange={handleFileChange} />
-          <button onClick={handleUpload}>Upload</button>
-          <p>{message}</p>
           <div>
             🥳 App successfully hosted. Try creating a new todo.
             <br />
@@ -46,6 +30,7 @@ function App() {
               Review next step of this tutorial.
             </a>
           </div>
+
           <button onClick={signOut}>Sign out</button>
         </main>
       )}
