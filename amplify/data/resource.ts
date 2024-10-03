@@ -1,59 +1,79 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 /*== STEP 1 ===============================================================
-The section below creates a Todo database table with a "content" field. Try
-adding a new "isDone" field as a boolean. The authorization rule below
-specifies that any user authenticated via an API key can "create", "read",
-"update", and "delete" any "Todo" records.
+// Schema definition for Products and Channels
 =========================================================================*/
 const schema = a.schema({
-  // Message type that's used for this PubSub sample
+  // Product type with necessary fields
   Product: a.customType({
-    product: a.string().array().required(),
+    product: a.string().array().required(), // Assuming product is an array of strings, adjust if necessary
     channelName: a.string().required(),
   }),
 
-  // Message publish mutation
+  // Mutation to publish messages to a channel
   publish: a
     .mutation()
     .arguments({
       channelName: a.string().required(),
-      content: a.string().array().required(),
+      content: a.string().array().required(), // Content is an array of strings
     })
     .returns(a.ref("Product"))
     .handler(
       a.handler.custom({
-        //  dataSource: "HttpDataSource",
-        entry: "./publish.js",
+        entry: "./publish.js", // Handler for publish mutation
       })
     )
     .authorization((allow) => [allow.publicApiKey()]),
 
-  // Subscribe to incoming messages
-  receive: a
+  onProductAdd: a
     .subscription()
-    // subscribes to the 'publish' mutation
-    .for(a.ref("publish"))
-    // subscription handler to set custom filters
+    .for(a.ref("addProduct")) // Subscribes to the 'publish' mutation
     .handler(
       a.handler.custom({
-        //  dataSource: "HttpDataSource",
-        entry: "./receive.js",
+        entry: "./onProductAdd.js", // Handler for receiving messages
       })
     )
-    // authorization rules as to who can subscribe to the data
     .authorization((allow) => [allow.publicApiKey()]),
 
-  // A data model to manage channels
+  // Subscription to receive messages published to a channel
+  receive: a
+    .subscription()
+    .for(a.ref("publish")) // Subscribes to the 'publish' mutation
+    .handler(
+      a.handler.custom({
+        entry: "./receive.js", // Handler for receiving messages
+      })
+    )
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  // Channel model definition
   Channel: a
     .model({
-      name: a.string(),
+      name: a.string().required(), // Ensure the name field is required
     })
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  // Product creation mutation
+  addProduct: a
+    .mutation()
+    .arguments({
+      name: a.string().required(),
+      price: a.float().required(), // Assuming price is a float value
+      // Add other fields as needed (like brand, image_url, etc.)
+    })
+    .returns(a.ref("Product"))
+    .handler(
+      a.handler.custom({
+        entry: "./addProduct.js", // Handler for adding products
+      })
+    )
     .authorization((allow) => [allow.publicApiKey()]),
 });
 
+// Export the schema type
 export type Schema = ClientSchema<typeof schema>;
 
+// Define data settings
 export const data = defineData({
   schema,
   authorizationModes: {
@@ -66,13 +86,7 @@ export const data = defineData({
 });
 
 /*== STEP 2 ===============================================================
-Go to your frontend source code. From your client-side code, generate a
-Data client to make CRUDL requests to your table. (THIS SNIPPET WILL ONLY
-WORK IN THE FRONTEND CODE FILE.)
-
-Using JavaScript or Next.js React Server Components, Middleware, Server 
-Actions or Pages Router? Review how to generate Data clients for those use
-cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
+// Generate a data client for frontend use
 =========================================================================*/
 
 /*
@@ -80,16 +94,15 @@ cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
 
-const client = generateClient<Schema>() // use this Data client for CRUDL requests
+const client = generateClient<Schema>() // Use this Data client for CRUDL requests
 */
 
 /*== STEP 3 ===============================================================
-Fetch records from the database and use them in your frontend component.
-(THIS SNIPPET WILL ONLY WORK IN THE FRONTEND CODE FILE.)
+// Example of how to fetch records and display them in your frontend component
 =========================================================================*/
 
-/* For example, in a React component, you can use this snippet in your
-  function's RETURN statement */
-// const { data: todos } = await client.models.Todo.list()
-
-// return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
+/* 
+In a React component, you can use the following snippet in your function's RETURN statement:
+const { data: products } = await client.models.Product.list()
+return <ul>{products.map(product => <li key={product.id}>{product.name}</li>)}</ul>
+*/

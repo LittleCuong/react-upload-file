@@ -1,37 +1,41 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { useEffect } from "react";
-
+import { useEffect } from "react"; // Import useState
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../amplify/data/resource";
 
 const client = generateClient<Schema>();
 
 function App() {
-  // const [message, setMessage] = useState("");
+  // const [products, setProducts] = useState([]); // State to hold the products
 
   useEffect(() => {
-    const sub = client.subscriptions.receive().subscribe({
+    // Subscribe to product additions
+    const sub = client.subscriptions.onProductAdd().subscribe({
       next: (event) => {
+        // const newProduct = event.data.onProductAdded;
+        // console.log(newProduct);
         console.log(event);
       },
     });
+
+    // Clean up subscription on unmount
     return () => sub.unsubscribe();
-  });
+  }, []);
 
   return (
     <Authenticator>
       {({ signOut }) => (
         <main>
           <div>
-            🥳 App successfully hosted. Try creating a new todo.
-            <br />
-            <a href="https://next-release-dev.d1ywzrxfkb9wgg.amplifyapp.com/react/start/quickstart/vite-react-app/#step-2-add-delete-to-do-functionality">
-              Review next step of this tutorial.
-            </a>
+            <h1>Product List</h1>
+            <ul>
+              {/* {products.map((product, index) => (
+                <li key={index}>{product.name}</li> // Assuming each product has a name
+              ))} */}
+            </ul>
+            <button onClick={signOut}>Sign out</button>
           </div>
-
-          <button onClick={signOut}>Sign out</button>
         </main>
       )}
     </Authenticator>
