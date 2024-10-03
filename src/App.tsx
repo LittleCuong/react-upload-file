@@ -1,6 +1,6 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../amplify/data/resource";
@@ -8,7 +8,7 @@ import type { Schema } from "../amplify/data/resource";
 const client = generateClient<Schema>();
 
 function App() {
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
 
   useEffect(() => {
     const sub = client.subscriptions.receive().subscribe({
