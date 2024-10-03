@@ -22,7 +22,10 @@ const schema = a.schema({
     })
     .returns(a.ref("Product"))
     .handler(
-      a.handler.custom({ dataSource: "HttpDataSource", entry: "./publish.js" })
+      a.handler.custom({
+        //  dataSource: "HttpDataSource",
+        entry: "./publish.js",
+      })
     )
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -33,7 +36,10 @@ const schema = a.schema({
     .for(a.ref("publish"))
     // subscription handler to set custom filters
     .handler(
-      a.handler.custom({ dataSource: "HttpDataSource", entry: "./receive.js" })
+      a.handler.custom({
+        //  dataSource: "HttpDataSource",
+        entry: "./receive.js",
+      })
     )
     // authorization rules as to who can subscribe to the data
     .authorization((allow) => [allow.publicApiKey()]),
