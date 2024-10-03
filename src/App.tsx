@@ -23,12 +23,32 @@ function App() {
     return () => sub.unsubscribe();
   }, []);
 
+  const addProduct = async () => {
+    try {
+      const newProduct = {
+        name: "New Product",
+        price: 199.99,
+        // Add other fields as needed, matching the schema
+      };
+
+      const result = await client.mutations.addProduct({
+        name: newProduct.name,
+        price: newProduct.price,
+      });
+
+      console.log("Product added successfully:", result);
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
+  };
+
   return (
     <Authenticator>
       {({ signOut }) => (
         <main>
           <div>
             <h1>Product List</h1>
+            <button onClick={addProduct}>Add Product</button>
             <ul>
               {/* {products.map((product, index) => (
                 <li key={index}>{product.name}</li> // Assuming each product has a name
