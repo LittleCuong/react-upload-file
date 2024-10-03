@@ -48,12 +48,11 @@ const schema = a.schema({
     .arguments({
       name: a.string().required(),
       price: a.float().required(), // Assuming price is a float value
-      // Add other fields as needed (like brand, image_url, etc.)
     })
     .returns(a.ref("Product"))
     .handler(
       a.handler.custom({
-        entry: "./addProduct.js", // Handler for adding products
+        entry: "./addProduct.js", // Handler for receiving new product
       })
     )
     .authorization((allow) => [allow.publicApiKey()]),
