@@ -11,7 +11,7 @@ const backend = defineBackend({
   data,
 });
 
-// const httpDataSource = backend.data.addHttpDataSource(
-//   "HttpDataSource",
-//   "http://localhost:3000/api/product/monitor"
-// );
+const httpDataSource = backend.data.addHttpDataSource(
+  "HttpDataSource",
+  "http://localhost:3000/api/product/monitor"
+);
