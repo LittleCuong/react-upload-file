@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { lambdaHTTP } from "../functions/lambdaHTTP/resource";
 
 /*== STEP 1 ===============================================================
 // Schema definition for Products and Channels
@@ -50,11 +51,12 @@ const schema = a.schema({
       price: a.float().required(), // Assuming price is a float value
     })
     .returns(a.ref("Product"))
-    .handler(
-      a.handler.custom({
-        entry: "./addProduct.js", // Handler for receiving new product
-      })
-    )
+    // .handler(
+    //   a.handler.custom({
+    //     entry: "./addProduct.js", // Handler for receiving new product
+    //   })
+    // )
+    .handler(a.handler.function(lambdaHTTP))
     .authorization((allow) => [allow.publicApiKey()]),
 });
 
