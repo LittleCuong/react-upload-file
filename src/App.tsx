@@ -13,14 +13,11 @@ function App() {
   useEffect(() => {
     // Subscribe to product additions
     const sub = client.subscriptions.onProductAdd().subscribe({
-      next: (event) => {
-        const newProduct = event?.product ?? []; // Assuming product is an array of strings, use optional chaining and nullish coalescing to handle null event
+      next: (event: any) => {
+        const newProduct = event.product; // Assuming product is an array of strings
         console.log(newProduct);
         if (newProduct) {
-          setProductList((prevProducts) => [
-            ...prevProducts,
-            ...newProduct.filter((product) => product !== null),
-          ]); // Append new products to the list after filtering out null values
+          setProductList((prevProducts) => [...prevProducts, ...newProduct]); // Append new products to the list
         }
         console.log(event);
       },
