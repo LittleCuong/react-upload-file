@@ -16,9 +16,7 @@ function App() {
       next: (event: any) => {
         const newProduct = event.product; // Assuming product is an array of strings
         console.log(newProduct);
-        if (newProduct) {
-          setProductList((prevProducts) => [...prevProducts, ...newProduct]); // Append new products to the list
-        }
+        setProductList(newProduct); // Update the product lists
         console.log(event);
       },
       error: (error) => console.error("Subscription error:", error),
@@ -47,9 +45,10 @@ function App() {
 
   return (
     <Authenticator>
-      {({ signOut }) => (
+      {({ signOut, user }) => (
         <main>
           <div>
+            <h1>User {user?.signInDetails?.loginId}</h1>
             <h1>Product List</h1>
             <input
               type="text"

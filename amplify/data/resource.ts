@@ -7,7 +7,7 @@ import { lambdaHTTP } from "../functions/lambdaHTTP/resource";
 const schema = a.schema({
   // Product type with necessary fields
   Product: a.customType({
-    product: a.string().array().required(), // Assuming product is an array of strings, adjust if necessary
+    product: a.string().required(), // Assuming product is an array of strings, adjust if necessary
     channelName: a.string().required(),
   }),
 
@@ -26,7 +26,7 @@ const schema = a.schema({
     .model({
       name: a.string().required(), // Ensure the name field is required
     })
-    .authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [allow.authenticated()]),
 
   // Product creation mutation
   addProduct: a
@@ -37,7 +37,8 @@ const schema = a.schema({
     })
     .returns(a.ref("Product"))
     .handler(a.handler.function(lambdaHTTP))
-    .authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [allow.authenticated()]),
+  // .authorization((allow) => [allow.publicApiKey()]),
 });
 
 // Export the schema type
