@@ -1,43 +1,48 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { useEffect, useState } from "react"; // Import useState
+import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../amplify/data/resource";
 
 const client = generateClient<Schema>();
 
 function App() {
-  const [productName, setProductName] = useState(""); // State to hold the products
+  const [productNameInput, setProductNameInput] = useState(""); // State for product name input (string)
+  const [productList, setProductList] = useState<string[]>([]); // State for the list of products (array)
 
   useEffect(() => {
     // Subscribe to product additions
     const sub = client.subscriptions.onProductAdd().subscribe({
       next: (event) => {
-        // const newProduct = event.data.onProductAdded;
-        // console.log(newProduct);
+        const newProduct = event?.product ?? []; // Assuming product is an array of strings, use optional chaining and nullish coalescing to handle null event
+        console.log(newProduct);
+        if (newProduct) {
+          setProductList((prevProducts) => [
+            ...prevProducts,
+            ...newProduct.filter((product) => product !== null),
+          ]); // Append new products to the list after filtering out null values
+        }
         console.log(event);
       },
+      error: (error) => console.error("Subscription error:", error),
     });
-    console.log(sub);
 
     // Clean up subscription on unmount
     return () => sub.unsubscribe();
-  });
+  }, []);
 
   const addProduct = async () => {
     try {
-      const newProduct = {
-        name: productName,
-        price: 199.99,
-        // Add other fields as needed, matching the schema
-      };
-
+      // Create new product using the value from the input field
       const result = await client.mutations.addProduct({
-        name: newProduct.name,
-        price: newProduct.price,
+        name: productNameInput,
+        price: 199.99,
       });
 
       console.log("Product added successfully:", result);
+
+      // Optionally, reset the input after adding the product
+      setProductNameInput("");
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -52,15 +57,17 @@ function App() {
             <input
               type="text"
               placeholder="Product name"
-              value={productName} // Bind input value to state
-              onChange={(e) => setProductName(e.target.value)}
+              value={productNameInput} // Bind input value to state (string)
+              onChange={(e) => setProductNameInput(e.target.value)} // Update the input state
             />
             <button onClick={addProduct}>Add Product</button>
+
             <ul>
-              {/* {products.map((product, index) => (
-                <li key={index}>{product.name}</li> // Assuming each product has a name
-              ))} */}
+              {productList?.map((product, index) => (
+                <li key={index}>{product}</li> // Display the list of products
+              ))}
             </ul>
+
             <button onClick={signOut}>Sign out</button>
           </div>
         </main>

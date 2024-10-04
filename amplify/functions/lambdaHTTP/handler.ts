@@ -37,10 +37,11 @@ export const handler: Handler = async (event) => {
 
     await collection.insertOne(newProduct); // Insert into MongoDB
 
-    // Return the newly added product
+    const allProducts = await collection.find().toArray();
+
     return {
-      product: [newProduct.name], // Assuming 'product' is an array of product names
-      channelName: "DefaultChannel", // Use a real channel name or a default value
+      product: allProducts.map((p: any) => p.name), // Assuming 'product' is an array of product names
+      channelName: "DefaultChannel", // You can replace this with dynamic channel name logic
     };
   } catch (error: any) {
     console.error("Error:", error);
