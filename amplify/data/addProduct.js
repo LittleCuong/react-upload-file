@@ -2,17 +2,37 @@ export function request(ctx) {
   // Extracting arguments from the context
   const { name, price } = ctx.args;
 
-  // Here you can add any logic to create your product, like saving to a database
-  // For demonstration, we will create a product object directly
-  const product = {
-    product: [`Product Name: ${name}`, `Price: ${price}`], // Customize product fields as needed
-    channelName: "Your Channel Name", // Set this to the appropriate channel name
-  };
+  // Perform any validation or pre-processing if needed
+  if (!name || !price) {
+    return {
+      errorType: "ValidationError",
+      errorMessage: "Product name and price are required.",
+    };
+  }
 
-  return product; // Return the product object to match your schema
+  // Return the arguments or initialize data for downstream resolvers
+  return {
+    name,
+    price,
+  };
 }
 
 export const response = (ctx) => {
-  // Return the product object to the caller
-  return ctx.result; // ctx.result should hold the product object returned from the request function
+  // Access the result from the previous step in the pipeline
+  const previousResult = ctx.prev.result;
+
+  // Check if the request handler or previous resolvers returned an error
+  if (previousResult.errorType) {
+    // Return the error message to the client
+    return previousResult;
+  }
+
+  // Assuming previousResult contains the valid data
+  const { name } = previousResult;
+
+  // Populate the fields as per the schema (a list of products and the channelName)
+  return {
+    product: [name], // Adding the product name to a list, as defined in the schema
+    channelName: "DefaultChannel", // You can replace this with logic to fetch the actual channel
+  };
 };

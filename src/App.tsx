@@ -1,13 +1,13 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { useEffect } from "react"; // Import useState
+import { useEffect, useState } from "react"; // Import useState
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../amplify/data/resource";
 
 const client = generateClient<Schema>();
 
 function App() {
-  // const [products, setProducts] = useState([]); // State to hold the products
+  const [productName, setProductName] = useState(""); // State to hold the products
 
   useEffect(() => {
     // Subscribe to product additions
@@ -18,15 +18,16 @@ function App() {
         console.log(event);
       },
     });
+    console.log(sub);
 
     // Clean up subscription on unmount
     return () => sub.unsubscribe();
-  }, []);
+  });
 
   const addProduct = async () => {
     try {
       const newProduct = {
-        name: "New Product",
+        name: productName,
         price: 199.99,
         // Add other fields as needed, matching the schema
       };
@@ -48,6 +49,12 @@ function App() {
         <main>
           <div>
             <h1>Product List</h1>
+            <input
+              type="text"
+              placeholder="Product name"
+              value={productName} // Bind input value to state
+              onChange={(e) => setProductName(e.target.value)}
+            />
             <button onClick={addProduct}>Add Product</button>
             <ul>
               {/* {products.map((product, index) => (
