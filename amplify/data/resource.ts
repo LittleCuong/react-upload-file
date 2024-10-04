@@ -12,19 +12,19 @@ const schema = a.schema({
   }),
 
   // Mutation to publish messages to a channel
-  publish: a
-    .mutation()
-    .arguments({
-      channelName: a.string().required(),
-      content: a.string().array().required(), // Content is an array of strings
-    })
-    .returns(a.ref("Product"))
-    .handler(
-      a.handler.custom({
-        entry: "./publish.js", // Handler for publish mutation
-      })
-    )
-    .authorization((allow) => [allow.publicApiKey()]),
+  // publish: a
+  //   .mutation()
+  //   .arguments({
+  //     channelName: a.string().required(),
+  //     content: a.string().array().required(), // Content is an array of strings
+  //   })
+  //   .returns(a.ref("Product"))
+  //   .handler(
+  //     a.handler.custom({
+  //       entry: "./publish.js", // Handler for publish mutation
+  //     })
+  //   )
+  //   .authorization((allow) => [allow.publicApiKey()]),
 
   onProductAdd: a
     .subscription()
@@ -51,11 +51,6 @@ const schema = a.schema({
       price: a.float().required(), // Assuming price is a float value
     })
     .returns(a.ref("Product"))
-    // .handler(
-    //   a.handler.custom({
-    //     entry: "./addProduct.js", // Handler for receiving new product
-    //   })
-    // )
     .handler(a.handler.function(lambdaHTTP))
     .authorization((allow) => [allow.publicApiKey()]),
 });

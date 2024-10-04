@@ -3,7 +3,7 @@ import { MongoClient } from "mongodb";
 import AWS from "aws-sdk";
 
 const uri =
-  "mongodb+srv://cuongnguyen:cuong922002@@cluster-thesis.yusph.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Thesis"; // MongoDB connection string from environment variables
+  "mongodb+srv://cuongnguyen:cuong922002%40@cluster-thesis.yusph.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Thesis"; // MongoDB connection string from environment variables
 
 let cachedDb: any = null;
 
@@ -19,7 +19,7 @@ async function connectToDatabase() {
 export const handler: Handler = async (event) => {
   try {
     // Validate the input from the event
-    const { name, price } = event.payload; // Ensure this matches your incoming structure
+    const { name, price } = event.arguments; // Ensure this matches your incoming structure
     if (!name || !price) {
       throw new Error("Name and price are required");
     }
@@ -39,8 +39,8 @@ export const handler: Handler = async (event) => {
 
     // Return the newly added product
     return {
-      statusCode: 200,
-      body: JSON.stringify(newProduct), // Returning product info
+      product: [newProduct.name], // Assuming 'product' is an array of product names
+      channelName: "DefaultChannel", // Use a real channel name or a default value
     };
   } catch (error: any) {
     console.error("Error:", error);
